@@ -33,6 +33,8 @@
 	},
 	"dependencies": {
 		"@cloudflare/workers-types": "^4.20231121.0",
+		"@esbuild-plugins/node-globals-polyfill": "^0.2.3",
+		"@esbuild-plugins/node-modules-polyfill": "^0.2.2",
 		"esbuild": "^0.19.11",
 		"worktop": "0.8.0-next.18"
 	},

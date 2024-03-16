@@ -3,6 +3,8 @@ import * as path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as esbuild from 'esbuild';
 import { getPlatformProxy } from 'wrangler';
+import { NodeGlobalsPolyfillPlugin } from '@esbuild-plugins/node-globals-polyfill';
+import { NodeModulesPolyfillPlugin } from '@esbuild-plugins/node-modules-polyfill';
 
 // list from https://developers.cloudflare.com/workers/runtime-apis/nodejs/
 const compatible_node_modules = [
@@ -74,7 +76,7 @@ export default function (options = {}) {
 			try {
 				const result = await esbuild.build({
 					platform: 'browser',
-					conditions: ['worker', 'browser'],
+					conditions: ['worker', 'workerd', 'browser'],
 					sourcemap: 'linked',
 					target: 'es2022',
 					entryPoints: [`${tmp}/_worker.js`],
@@ -87,6 +89,7 @@ export default function (options = {}) {
 					},
 					external,
 					alias: Object.fromEntries(compatible_node_modules.map((id) => [id, `node:${id}`])),
+					plugins: [NodeGlobalsPolyfillPlugin({ buffer: true }), NodeModulesPolyfillPlugin()],
 					logLevel: 'silent'
 				});
 
